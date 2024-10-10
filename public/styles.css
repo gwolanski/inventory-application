@@ -1,0 +1,25 @@
+html,
+body {
+    height: 100vh;
+    margin: 0;
+    display: grid;
+}
+
+.page-container {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    height: 100vh;
+}
+
+.nav-section {
+    grid-column: 1;
+    border: 1px solid blue;
+}
+
+.main-content {
+    grid-column: 2;
+}
+
+td {
+    padding: 10px;
+}

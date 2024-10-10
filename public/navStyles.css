@@ -1,0 +1,41 @@
+.heading {
+    font-size: 1.5rem;
+}
+
+.nav-button {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 1rem;
+    font-size: 1rem;
+    text-align: left;
+    width: 100%;
+    border-radius: 0;
+    color: #000;
+    display: block;
+}
+
+.nav-button:hover {
+    cursor: pointer;
+}
+
+.accordion-body {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.categories {
+    max-width: 150px;
+    white-space: normal;
+    background-color: white;
+    text-align: left;
+    border: 1px solid rgb(166, 166, 166);
+}
+
+.new-category-input {
+    width: 200px;
+}
+
+.add-button {
+    width: 100px;
+}

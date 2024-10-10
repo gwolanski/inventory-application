@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles.css">
+    <title>Category Manager</title>
+</head>
+
+<body>
+    <div class="page-container">
+        <div class="nav-section">
+            <%- include("nav", { categories: categories }) %>
+        </div>
+        <div class="main-content">
+            <div>Category Manager</div>
+
+            <form action="/categories" method="POST">
+                <input type="text" placeholder="new category" name="newCategory" id="newCategory">
+                <button type="submit">Add New Category</button>
+            </form>
+
+
+            <table class="category-table">
+                <tbody>
+                    <% categories.forEach(category=> { %>
+                        <tr>
+                            <td>
+                                <%= category %>
+                            </td>
+                            <td>
+                                <button>
+                                    <img src="/edit.svg" alt="Edit Icon">
+                                </button>
+                            </td>
+                            <td>
+                                <button>
+                                    <img src="/delete_forever.svg" alt="Delete Icon">
+                                </button>
+                            </td>
+                        </tr>
+                        <% }) %>
+                </tbody>
+            </table>
+
+
+        </div>
+    </div>
+</body>
+
+</html>
