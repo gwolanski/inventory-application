@@ -28,10 +28,21 @@
                     <% categories.forEach(category=> { %>
                         <tr>
                             <td>
-                                <%= category %>
+                                <span class="category-name">
+                                    <%= category %>
+                                </span>
+                                <form action="/categories" class="edit-form" method="POST">
+                                    <input type="text" name="updatedCategory" class="category-input"
+                                        value="<%= category %>" style="display: none">
+                                    <input type="hidden" name="category" value="<%= category %>">
+                                    <input type="hidden" name="action" value="edit">
+                                    <button class="update-button" type="submit" style="display: none">Update</button>
+                                </form>
+
+
                             </td>
                             <td>
-                                <button>
+                                <button onclick="toggleEdit(this)">
                                     <img src="/edit.svg" alt="Edit Icon">
                                 </button>
                             </td>
@@ -52,6 +63,27 @@
 
         </div>
     </div>
+
+    <script>
+        function toggleEdit(button) {
+            const row = button.closest("tr");
+            const categoryName = row.querySelector(".category-name");
+            const categoryInput = row.querySelector(".category-input");
+            const updateButton = row.querySelector(".update-button");
+
+            if (categoryInput.style.display === "none") {
+                categoryInput.style.display = "inline";
+                updateButton.style.display = "inline";
+                categoryName.style.display = "none";
+                categoryInput.focus();
+            } else {
+                categoryInput.style.display = "none";
+                updateButton.style.display = "none";
+                categoryName.style.display = "inline";
+            }
+        }
+    </script>
+
 </body>
 
 </html>

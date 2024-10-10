@@ -21,9 +21,6 @@ router.get("/categories", inventoryController.getAllCategories);
 //add or delete category in category manager
 router.post("/categories", inventoryController.manageCategory);
 
-//delete category in category manager
-router.post("/categories", inventoryController.deleteCategory);
-
 
 //new item page route
 router.get("/new", async (req, res) => {

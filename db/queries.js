@@ -38,6 +38,13 @@ async function deleteCategory(category) {
     )
 };
 
+async function editCategory(category, updatedCategory) {
+    const categoryId = await getCategoryId(category);
+    await pool.query(
+        "UPDATE item_category SET category_name = $1 WHERE category_id = $2", [updatedCategory, categoryId]
+    )
+}
+
 async function addNewItem(item) {
     console.log("item: ", item);
 };
@@ -64,5 +71,6 @@ module.exports = {
     deleteCategory,
     deleteItem,
     getCategoryId,
-    getAllCategories
+    getAllCategories,
+    editCategory
 };
