@@ -25,18 +25,21 @@ async function getCategoryItems(category) {
 
 async function addNewCategory(category) {
     const result = await pool.query(
-        'INSERT INTO item_category (category_name) VALUES ($1) RETURNING *', [category]
+        "INSERT INTO item_category (category_name) VALUES ($1) RETURNING *", [category]
     );
     console.log("category: ", result.rows[0]);
     return result.rows[0].category_name;
 };
 
-async function addNewItem(item) {
-    console.log("item: ", item);
+async function deleteCategory(category) {
+    const categoryId = await getCategoryId(category);
+    await pool.query(
+        "DELETE FROM item_category WHERE category_id = $1", [categoryId]
+    )
 };
 
-async function deleteCategory(category) {
-    console.log("category: ", category);
+async function addNewItem(item) {
+    console.log("item: ", item);
 };
 
 async function deleteItem(item) {

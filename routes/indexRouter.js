@@ -18,9 +18,11 @@ router.get("/", inventoryController.getAllItemsAndCategories);
 //category management page route
 router.get("/categories", inventoryController.getAllCategories);
 
+//add or delete category in category manager
+router.post("/categories", inventoryController.manageCategory);
 
-//post new category in category manager
-router.post("/categories", inventoryController.addNewCategory);
+//delete category in category manager
+router.post("/categories", inventoryController.deleteCategory);
 
 
 //new item page route

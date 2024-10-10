@@ -18,6 +18,7 @@
 
             <form action="/categories" method="POST">
                 <input type="text" placeholder="new category" name="newCategory" id="newCategory">
+                <input type="hidden" name="action" value="add">
                 <button type="submit">Add New Category</button>
             </form>
 
@@ -35,9 +36,13 @@
                                 </button>
                             </td>
                             <td>
-                                <button>
-                                    <img src="/delete_forever.svg" alt="Delete Icon">
-                                </button>
+                                <form action="/categories" method="POST">
+                                    <input type="hidden" name="category" value="<%= category %>">
+                                    <input type="hidden" name="action" value="delete">
+                                    <button>
+                                        <img src="/delete_forever.svg" alt="Delete Icon">
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                         <% }) %>
