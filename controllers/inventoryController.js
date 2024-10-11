@@ -25,7 +25,8 @@ exports.getAllItemsAndCategories = async (req, res) => {
 exports.getAllCategories = async (req, res) => {
     try {
         const categories = await getAllCategories();
-        res.render("categoryManager", { categories: categories || [] });
+        const errorMessage = null;
+        res.render("categoryManager", { categories: categories || [], errorMessage: errorMessage });
     } catch (error) {
         console.error("Error loading Category Manager", error);
         res.status(500).send("Internal Server Error");
@@ -65,8 +66,16 @@ exports.manageCategory = async (req, res) => {
     const { action, newCategory, category, updatedCategory } = req.body;
 
     try {
+        let errorMessage = null;
+
         if (action === "add") {
-            await addNewCategory(newCategory);
+            const categoryId = await getCategoryId(newCategory);
+            console.log("categoryId", categoryId)
+            if (categoryId === null || categoryId === undefined) {
+                await addNewCategory(newCategory);
+            } else {
+                errorMessage = "Category already exists.";
+            }
         } else if (action === "delete") {
             await deleteCategory(category);
         } else if (action === "edit") {
@@ -74,7 +83,7 @@ exports.manageCategory = async (req, res) => {
         }
 
         const categories = await getAllCategories();
-        res.render("categoryManager", { categories });
+        res.render("categoryManager", { categories, errorMessage });
     } catch (error) {
         console.error("Error managing category:", error);
         res.status(500).send("Internal Server Error");

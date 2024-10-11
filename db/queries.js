@@ -55,13 +55,18 @@ async function deleteItem(item) {
 
 async function getCategoryId(category) {
     const result = await pool.query("SELECT category_id FROM item_category WHERE category_name = $1", [category]);
-    return result.rows[0].category_id;
+
+    if (result.rows.length > 0) {
+        return result.rows[0].category_id;
+    } else {
+        return null;
+    }
 };
 
 async function getAllCategories() {
     const categories = await pool.query("SELECT category_name FROM item_category");
     return categories.rows.map(row => row.category_name);
-}
+};
 
 module.exports = {
     getAllItems,
