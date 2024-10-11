@@ -54,7 +54,7 @@ async function deleteItem(item) {
 };
 
 async function getCategoryId(category) {
-    const result = await pool.query("SELECT category_id FROM item_category WHERE category_name = $1", [category]);
+    const result = await pool.query("SELECT category_id FROM item_category WHERE LOWER(category_name) = LOWER($1)", [category]);
 
     if (result.rows.length > 0) {
         return result.rows[0].category_id;

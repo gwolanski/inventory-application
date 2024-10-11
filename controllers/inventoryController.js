@@ -70,7 +70,7 @@ exports.manageCategory = async (req, res) => {
 
         if (action === "add") {
             const categoryId = await getCategoryId(newCategory);
-            console.log("categoryId", categoryId)
+
             if (categoryId === null || categoryId === undefined) {
                 await addNewCategory(newCategory);
             } else {
