@@ -67,10 +67,8 @@ exports.manageCategory = async (req, res) => {
 
     try {
         let errorMessage = null;
-
         if (action === "add") {
             const categoryId = await getCategoryId(newCategory);
-
             if (categoryId === null || categoryId === undefined) {
                 await addNewCategory(newCategory);
             } else {
@@ -79,7 +77,12 @@ exports.manageCategory = async (req, res) => {
         } else if (action === "delete") {
             await deleteCategory(category);
         } else if (action === "edit") {
-            await editCategory(category, updatedCategory)
+            const categoryId = await getCategoryId(updatedCategory);
+            if (categoryId === null || categoryId === undefined) {
+                await editCategory(category, updatedCategory);
+            } else {
+                errorMessage = "Category already exists.";
+            }
         }
 
         const categories = await getAllCategories();

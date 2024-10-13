@@ -14,9 +14,9 @@
             <%- include("nav", { categories: categories }) %>
         </div>
         <div class="main-content">
-            <div>Category Manager</div>
+            <h1 class="page-title">Category Manager</h1>
 
-            <form action="/categories" method="POST">
+            <form class="category-form" action="/categories" method="POST">
                 <input type="text" placeholder="new category" name="newCategory" id="newCategory">
                 <input type="hidden" name="action" value="add">
                 <button type="submit">Add New Category</button>

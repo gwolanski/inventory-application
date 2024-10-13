@@ -27,7 +27,6 @@ async function addNewCategory(category) {
     const result = await pool.query(
         "INSERT INTO item_category (category_name) VALUES ($1) RETURNING *", [category]
     );
-    console.log("category: ", result.rows[0]);
     return result.rows[0].category_name;
 };
 
