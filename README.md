@@ -1,1 +1,1 @@
-# inventory-application
+used: express, node, postgresql, bootstrap, javascript, html, css

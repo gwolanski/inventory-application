@@ -16,6 +16,10 @@ body {
     border: 1px solid blue;
 }
 
+.nav-link {
+    text-decoration: none;
+}
+
 .main-content {
     grid-column: 2;
     padding: 15px;
@@ -27,12 +31,33 @@ body {
     font-weight: bold;
 }
 
+.item-form {
+    padding: 10px;
+}
+
+.input-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-label {
+    font-size: 1rem;
+}
+
+.item-input {
+    font-size: 1rem;
+}
+
 .category-form {
     padding: 10px;
     margin: 15px 0;
     background-color: rgb(229, 228, 220);
     width: fit-content;
     border: 1px solid black;
+}
+
+.add-button {
+    font-size: 1rem;
 }
 
 .error-message {

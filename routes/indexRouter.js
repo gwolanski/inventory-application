@@ -13,14 +13,13 @@ const {
 
 
 //home page route
-router.get("/", inventoryController.getAllItemsAndCategories);
+router.get("/", inventoryController.renderIndexPage);
 
 //category management page route
-router.get("/categories", inventoryController.getAllCategories);
+router.get("/categories", inventoryController.renderCategoryManager);
 
-//add or delete category in category manager
+//add, edit, or delete category in category manager
 router.post("/categories", inventoryController.manageCategory);
-
 
 //new item page route
 router.get("/new", async (req, res) => {
@@ -40,7 +39,8 @@ router.post("/new", async (req, res) => {
     }
 })
 
-
+//view items by category
+router.get("/:category", inventoryController.getItemsByCategory);
 
 
 module.exports = router;

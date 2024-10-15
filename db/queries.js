@@ -14,13 +14,25 @@ const pool = new Pool({
 
 async function getAllItems() {
     const result = await pool.query("SELECT * FROM items");
-    console.log("getAllItems result: ", result);
     return result
 };
 
-async function getCategoryItems(category) {
-    const categoryId = getCategoryId(category);
-    console.log("categoryId: ", categoryId);
+async function getAllCategories() {
+    // const categories = await pool.query("SELECT category_name FROM item_category");
+    // return categories.rows.map(row => row.category_name);
+
+    const categories = await pool.query("SELECT * FROM item_category");
+    return categories.rows.map(row => ({
+        id: row.category_id,
+        name: row.category_name
+    }));
+};
+
+async function getCategoryItems(categoryId) {
+    const result = await pool.query(
+        "SELECT * FROM items WHERE category_id = $1", [categoryId]
+    );
+    return result
 };
 
 async function addNewCategory(category) {
@@ -62,10 +74,7 @@ async function getCategoryId(category) {
     }
 };
 
-async function getAllCategories() {
-    const categories = await pool.query("SELECT category_name FROM item_category");
-    return categories.rows.map(row => row.category_name);
-};
+
 
 module.exports = {
     getAllItems,

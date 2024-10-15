@@ -10,7 +10,7 @@ const {
     editCategory } = require("../db/queries");
 
 //get all items and categories for main page
-exports.getAllItemsAndCategories = async (req, res) => {
+exports.renderIndexPage = async (req, res) => {
     try {
         const items = await getAllItems();
         const categories = await getAllCategories();
@@ -21,8 +21,29 @@ exports.getAllItemsAndCategories = async (req, res) => {
     }
 };
 
-//get all categories for category manager
-exports.getAllCategories = async (req, res) => {
+//get items by category
+exports.getItemsByCategory = async (req, res) => {
+    try {
+        //in the items table, category should be the category_id from item_category table
+        //when the nav bar link is pressed for a certain category, we want to run a query where
+        //it finds the category_id based off of the category_name and then SELECTS
+        //all items that have the same category and returns those items
+        // *I NEED TO MAKE SURE THAT WHEN AN ITEM IS ADDED, THE CATEGORY SELECTED RETURNS THE ID AS THE VALUE 
+        //RATHER THAN THE CATEGORY NAME
+
+        const { category } = req.params;
+        console.log("category:", category)
+        const categoryId = await getCategoryId(category);
+        const items = await getCategoryItems(categoryId);
+        res.render("filteredItems", { category: category, items: items || [] })
+    } catch (error) {
+        console.error("Error getting items by category:", error);
+        res.status(500).send("Internal Server Error");
+    }
+}
+
+//render category manager
+exports.renderCategoryManager = async (req, res) => {
     try {
         const categories = await getAllCategories();
         const errorMessage = null;
@@ -33,35 +54,7 @@ exports.getAllCategories = async (req, res) => {
     }
 };
 
-//add new category in category manager
-// exports.addCategory = async (req, res) => {
-//     const { newCategory } = req.body;
-
-//     try {
-//         await addNewCategory(newCategory);
-//         const categories = await getAllCategories();
-//         res.render("categoryManager", { categories: categories });
-//     } catch (error) {
-//         console.error("Error adding new category:", error);
-//         res.status(500).send("Internal Server Error");
-//     }
-// };
-
-//delete cateory in category manager
-// exports.deleteCategory = async (req, res) => {
-//     const { category } = req.body;
-
-//     try {
-//         await deleteCategory(category);
-//         const categories = await getAllCategories();
-//         res.render("categoryManager", { categories: categories });
-//     } catch (error) {
-//         console.error("Error deleting category:", error);
-//         res.status(500).send("Internal Server Error");
-//     }
-// }
-
-//add or delete category. MAKE SURE YOU CAN'T ADD EXISTING CATEGORY
+//add or delete category
 exports.manageCategory = async (req, res) => {
     const { action, newCategory, category, updatedCategory } = req.body;
 
