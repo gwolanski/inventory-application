@@ -4,15 +4,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles.css">
     <title>
         <%= category %>
     </title>
 </head>
 
 <body>
-    <h1 class="page-title">
-        <%= category %>
-    </h1>
+    <div class="page-container">
+        <div class="nav-section">
+            <%- include("nav", { categories: categories }) %>
+        </div>
+        <div class="main-content">
+            <h1 class="page-title">
+                <%= category %>
+            </h1>
+            <div class="items-container">
+                <% if (items.length> 0) { %>
+                    <% for (let i=0; i < items.length; i++) { %>
+                        <div class="item-container">
+                            <div class="item-name">
+                                <%= items[i].name %>
+                            </div>
+                            <div class="item-price">
+                                $ <%= items[i].price %>
+                            </div>
+                            <div class="item-category">
+                                <%= items[i].category %>
+                            </div>
+
+                        </div>
+                        <% } %>
+                            <% } else { %>
+                                <div class="no-items">
+                                    There are no items in this category.
+                                </div>
+                                <% } %>
+
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

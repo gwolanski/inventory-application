@@ -75,3 +75,13 @@ td {
     padding: 10px;
     background-color: rgb(229, 228, 220);
 }
+
+.items-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.item-container {
+    border: 1px solid black;
+    width: 150px;
+}

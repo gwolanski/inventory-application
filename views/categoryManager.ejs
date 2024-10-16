@@ -33,7 +33,7 @@
                                 <span class="category-name">
                                     <%= category.name %>
                                 </span>
-                                <form action="/categories" class="edit-form" method="POST">
+                                <form action="/categories" class="edit-category-form" method="POST">
                                     <input type="text" name="updatedCategory" class="category-input"
                                         value="<%= category.name %>" style="display: none">
                                     <input type="hidden" name="category" value="<%= category.name %>">

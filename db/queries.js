@@ -13,14 +13,16 @@ const pool = new Pool({
 });
 
 async function getAllItems() {
-    const result = await pool.query("SELECT * FROM items");
-    return result
+    const result = await pool.query(`SELECT items.item_name, items.item_price, item_category.category_name FROM items
+        JOIN item_category ON items.category_id = item_category.category_id`);
+    return result.rows.map(row => ({
+        name: row.item_name,
+        price: row.item_price,
+        category: row.category_name
+    }));
 };
 
 async function getAllCategories() {
-    // const categories = await pool.query("SELECT category_name FROM item_category");
-    // return categories.rows.map(row => row.category_name);
-
     const categories = await pool.query("SELECT * FROM item_category");
     return categories.rows.map(row => ({
         id: row.category_id,
@@ -56,8 +58,13 @@ async function editCategory(category, updatedCategory) {
     )
 }
 
-async function addNewItem(item) {
-    console.log("item: ", item);
+async function addNewItem(itemName, itemPrice, itemCategory) {
+    // console.log("itemName: ", itemName);
+    console.log("itemCategory: ", itemCategory);
+    // console.log("itemPrice: ", itemPrice);
+    await pool.query(
+        "INSERT INTO items (item_name, item_price, category_id) VALUES ($1, $2, $3)", [itemName, itemPrice, itemCategory]
+    );
 };
 
 async function deleteItem(item) {

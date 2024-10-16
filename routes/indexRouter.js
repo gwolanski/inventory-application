@@ -15,6 +15,10 @@ const {
 //home page route
 router.get("/", inventoryController.renderIndexPage);
 
+//add, edit, or delete item
+//**since switching it to manageItem from postNewItem, no longer works. PICK UP HERE!!!
+router.post("/", inventoryController.manageItem);
+
 //category management page route
 router.get("/categories", inventoryController.renderCategoryManager);
 
@@ -26,7 +30,7 @@ router.get("/new", async (req, res) => {
     res.render("new");
 });
 
-//post new item route
+//post new item route - probably dont need if i just post to main page**
 router.post("/new", async (req, res) => {
     const { name, price, quantity, category } = req.body;
 
@@ -40,7 +44,7 @@ router.post("/new", async (req, res) => {
 })
 
 //view items by category
-router.get("/:category", inventoryController.getItemsByCategory);
+router.get("/:category", inventoryController.renderItemsByCategory);
 
 
 module.exports = router;

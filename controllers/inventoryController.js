@@ -11,31 +11,25 @@ const {
 
 //get all items and categories for main page
 exports.renderIndexPage = async (req, res) => {
+    let errorMessage = null;
     try {
         const items = await getAllItems();
         const categories = await getAllCategories();
-        res.render("index", { items: items || [], categories: categories || [] });
+        res.render("index", { items: items || [], categories: categories || [], errorMessage: errorMessage });
     } catch (error) {
         console.error("Error getting items and categories:", error);
         res.status(500).send("Internal Server Error");
     }
 };
 
-//get items by category
-exports.getItemsByCategory = async (req, res) => {
+//renders a specific category page that only displays items from that category
+exports.renderItemsByCategory = async (req, res) => {
     try {
-        //in the items table, category should be the category_id from item_category table
-        //when the nav bar link is pressed for a certain category, we want to run a query where
-        //it finds the category_id based off of the category_name and then SELECTS
-        //all items that have the same category and returns those items
-        // *I NEED TO MAKE SURE THAT WHEN AN ITEM IS ADDED, THE CATEGORY SELECTED RETURNS THE ID AS THE VALUE 
-        //RATHER THAN THE CATEGORY NAME
-
         const { category } = req.params;
-        console.log("category:", category)
         const categoryId = await getCategoryId(category);
         const items = await getCategoryItems(categoryId);
-        res.render("filteredItems", { category: category, items: items || [] })
+        const categories = await getAllCategories();
+        res.render("filteredItems", { category: category, items: items || [], categories: categories })
     } catch (error) {
         console.error("Error getting items by category:", error);
         res.status(500).send("Internal Server Error");
@@ -85,3 +79,54 @@ exports.manageCategory = async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 };
+
+exports.postNewItem = async (req, res) => {
+    const { newItemName, newItemCategory, newItemPrice } = req.body;
+
+    try {
+
+        await addNewItem(newItemName, newItemPrice, newItemCategory);
+        const items = await getAllItems();
+
+        const categories = await getAllCategories();
+        res.render("index", { items: items || [], categories: categories || [] });
+    } catch (error) {
+        console.error("Error adding new item:", error);
+        res.status(500).send("Internal Server Error");
+    }
+};
+
+exports.manageItem = async (req, res) => {
+    const { action, newItemName, newItemCategory, newItemPrice, updatedItemName, updatedItemCategory, updatedItemPrice } = req.body;
+
+    const existingItem = await itemExists(newItemName);
+    console.log("existingItem: ", existingItem);
+    try {
+        let errorMessage = null;
+        if (action === "add") {
+            if (!existingItem) {
+                await addNewItem(newItemName, newItemPrice, newItemCategory);
+            } else {
+                errorMessage = "Item already exists";
+            }
+        } else if (action === "delete") {
+            console.log("delete")
+        } else if (action === "edit") {
+            console.log("edit")
+        }
+
+        const items = await getAllItems();
+        const categories = await getAllCategories();
+        res.render("index", { items: items || [], categories: categories || [], errorMessage: errorMessage });
+    } catch (error) {
+        console.error("Error managing item:", error);
+        res.status(500).send("Internal Server Error");
+    }
+};
+
+async function itemExists(itemName) {
+    const items = await getAllItems();
+    return items.some(item => {
+        item.name = itemName
+    })
+}
