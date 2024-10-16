@@ -100,7 +100,7 @@ exports.manageItem = async (req, res) => {
     const { action, newItemName, newItemCategory, newItemPrice, updatedItemName, updatedItemCategory, updatedItemPrice } = req.body;
 
     const existingItem = await itemExists(newItemName);
-    console.log("existingItem: ", existingItem);
+    console.log("existingItem: ", existingItem)
     try {
         let errorMessage = null;
         if (action === "add") {
@@ -127,6 +127,6 @@ exports.manageItem = async (req, res) => {
 async function itemExists(itemName) {
     const items = await getAllItems();
     return items.some(item => {
-        item.name = itemName
+        return item.name.toLowerCase() === itemName.toLowerCase();
     })
 }
