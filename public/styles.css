@@ -17,7 +17,7 @@ body {
 
 .nav-section {
     grid-column: 1;
-    border: 1px solid blue;
+    border: 1px solid rgb(0, 0, 125);
 }
 
 .nav-link {
@@ -33,6 +33,7 @@ body {
 .page-title {
     font-size: 1.25rem;
     font-weight: bold;
+    color: #4E342E;
 }
 
 .item-form {

@@ -32,9 +32,13 @@ async function getAllCategories() {
 
 async function getCategoryItems(categoryId) {
     const result = await pool.query(
-        "SELECT * FROM items WHERE category_id = $1 ORDER BY category_name ASC", [categoryId]
+        "SELECT * FROM items WHERE category_id = $1 ORDER BY item_name ASC", [categoryId]
     );
-    return result
+    return result.rows.map(row => ({
+        name: row.item_name,
+        price: row.item_price,
+        category: row.category_name
+    }));
 };
 
 async function addNewCategory(category) {

@@ -17,7 +17,8 @@
             <h1 class="page-title">Category Manager</h1>
 
             <form class="category-form" action="/categories" method="POST">
-                <input type="text" placeholder="new category" name="newCategory" id="newCategory">
+                <input type="text" placeholder="new category" name="newCategory" id="newCategory" minlength="2"
+                    maxlength="30">
                 <input type="hidden" name="action" value="add">
                 <button class="add-button" type="submit">Add New Category</button>
             </form>
@@ -35,7 +36,7 @@
                                 </span>
                                 <form action="/categories" class="edit-category-form" method="POST">
                                     <input type="text" name="updatedCategory" class="category-input"
-                                        value="<%= category.name %>" style="display: none">
+                                        value="<%= category.name %>" style="display: none" minlength="2" maxlength="30">
                                     <input type="hidden" name="category" value="<%= category.name %>">
                                     <input type="hidden" name="action" value="edit">
                                     <button class="update-button" type="submit" style="display: none">Update</button>

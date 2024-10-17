@@ -35,7 +35,7 @@
                                 <div class="input-container">
                                     <label for="newItemName" class="input-label">Item Name:</label>
                                     <input type="text" placeholder="item name" name="newItemName" id="newItemName"
-                                        class="item-input">
+                                        class="item-input" minlength="2" maxlength="30">
                                 </div>
                                 <div class="input-container">
                                     <label for="newItemCategory" class="input-label">Item Category:</label>
@@ -79,7 +79,7 @@
 
                         <form action="/" method="POST" class="edit-item-form">
                             <input type="text" name="updatedItemName" class="item-input edit-name-input"
-                                value="<%= items[i].name %>" style="display: none">
+                                value="<%= items[i].name %>" style="display: none" minlength="2" maxlength="30">
                             <input type="hidden" name="itemName" value="<%= items[i].name %>">
                             <input type="number" name="updatedItemPrice" class="item-input edit-price-input"
                                 value="<%= items[i].price %>" style="display: none" step=".01">
