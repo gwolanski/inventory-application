@@ -23,7 +23,7 @@ async function getAllItems() {
 };
 
 async function getAllCategories() {
-    const categories = await pool.query("SELECT * FROM item_category ORDER BY category_name");
+    const categories = await pool.query("SELECT * FROM item_category ORDER BY category_name ASC");
     return categories.rows.map(row => ({
         id: row.category_id,
         name: row.category_name
@@ -32,7 +32,7 @@ async function getAllCategories() {
 
 async function getCategoryItems(categoryId) {
     const result = await pool.query(
-        "SELECT * FROM items WHERE category_id = $1", [categoryId]
+        "SELECT * FROM items WHERE category_id = $1 ORDER BY category_name ASC", [categoryId]
     );
     return result
 };
@@ -65,7 +65,10 @@ async function addNewItem(itemName, itemPrice, itemCategory) {
 };
 
 async function deleteItem(item) {
-    console.log("item: ", item);
+    const itemId = await getItemId(item);
+    await pool.query(
+        "DELETE FROM items WHERE item_id = $1", [itemId]
+    );
 };
 
 async function editItem(itemName, updatedItemName, updatedItemPrice, updatedItemCategory) {

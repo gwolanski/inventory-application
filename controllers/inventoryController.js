@@ -58,7 +58,8 @@ exports.manageCategory = async (req, res) => {
         if (action === "add") {
             const categoryId = await getCategoryId(newCategory);
             if (categoryId === null || categoryId === undefined) {
-                await addNewCategory(newCategory);
+                const properCaseNewCategory = await changeToProperCase(newCategory);
+                await addNewCategory(properCaseNewCategory);
             } else {
                 errorMessage = "Category already exists.";
             }
@@ -67,7 +68,8 @@ exports.manageCategory = async (req, res) => {
         } else if (action === "edit") {
             const categoryId = await getCategoryId(updatedCategory);
             if (categoryId === null || categoryId === undefined) {
-                await editCategory(category, updatedCategory);
+                const properCaseUpdatedCategory = await changeToProperCase(updatedCategory);
+                await editCategory(category, properCaseUpdatedCategory);
             } else {
                 errorMessage = "Category already exists.";
             }
@@ -81,40 +83,36 @@ exports.manageCategory = async (req, res) => {
     }
 };
 
-exports.postNewItem = async (req, res) => {
-    const { newItemName, newItemCategory, newItemPrice } = req.body;
-
-    try {
-
-        await addNewItem(newItemName, newItemPrice, newItemCategory);
-        const items = await getAllItems();
-
-        const categories = await getAllCategories();
-        res.render("index", { items: items || [], categories: categories || [] });
-    } catch (error) {
-        console.error("Error adding new item:", error);
-        res.status(500).send("Internal Server Error");
-    }
-};
-
 exports.manageItem = async (req, res) => {
-    const { action, newItemName, newItemCategory, newItemPrice, itemName, updatedItemName, updatedItemCategory, updatedItemPrice } = req.body;
+    const {
+        action,
+        newItemName,
+        newItemCategory,
+        newItemPrice,
+        itemName,
+        updatedItemName,
+        updatedItemCategory,
+        updatedItemPrice,
+        itemForDelete
+    } = req.body;
 
     try {
         let errorMessage = null;
         if (action === "add") {
             const existingItem = await itemExists(newItemName);
             if (!existingItem) {
-                await addNewItem(newItemName, newItemPrice, newItemCategory);
+                const properCaseNewItemName = await changeToProperCase(newItemName);
+                await addNewItem(properCaseNewItemName, newItemPrice, newItemCategory);
             } else {
                 errorMessage = "Item already exists";
             }
         } else if (action === "delete") {
-            console.log("delete")
+            await deleteItem(itemForDelete);
         } else if (action === "edit") {
             const existingItem = await itemExists(updatedItemName);
             if (!existingItem) {
-                await editItem(itemName, updatedItemName, updatedItemPrice, updatedItemCategory);
+                const properCaseUpdatedItemName = await changeToProperCase(updatedItemName)
+                await editItem(itemName, properCaseUpdatedItemName, updatedItemPrice, updatedItemCategory);
             } else {
                 //i need to make a different error message since the other one appears in the main form
                 console.log('item exists');
@@ -137,4 +135,8 @@ async function itemExists(itemName) {
     return items.some(item => {
         return item.name.toLowerCase() === itemName.toLowerCase();
     })
+};
+
+async function changeToProperCase(itemName) {
+    return itemName.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
 }
