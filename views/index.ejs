@@ -78,11 +78,11 @@
                     <form action="/" method="POST" class="edit-item-form">
                         <input type="text" name="updatedItemName" class="item-input edit-name-input"
                             value="<%= items[i].name %>" style="display: none">
-                        <input type="hidden" name="item" value="<%= items[i].name %>">
+                        <input type="hidden" name="itemName" value="<%= items[i].name %>">
 
                         <input type="number" name="updatedItemPrice" class="item-input edit-price-input"
-                            value="<%= items[i].price %>" style="display: none">
-                        <input type="hidden" name="item" value="<%= items[i].price %>">
+                            value="<%= items[i].price %>" style="display: none" step=".01">
+                        <input type="hidden" name="itemPrice" value="<%= items[i].price %>">
 
                         <select name="updatedItemCategory" class="item-input edit-category-input" style="display: none"
                             required>

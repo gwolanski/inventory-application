@@ -7,7 +7,8 @@ const {
     deleteItem,
     getCategoryId,
     getAllCategories,
-    editCategory } = require("../db/queries");
+    editCategory,
+    editItem } = require("../db/queries");
 
 //get all items and categories for main page
 exports.renderIndexPage = async (req, res) => {
@@ -97,13 +98,12 @@ exports.postNewItem = async (req, res) => {
 };
 
 exports.manageItem = async (req, res) => {
-    const { action, newItemName, newItemCategory, newItemPrice, updatedItemName, updatedItemCategory, updatedItemPrice } = req.body;
+    const { action, newItemName, newItemCategory, newItemPrice, itemName, updatedItemName, updatedItemCategory, updatedItemPrice } = req.body;
 
-    const existingItem = await itemExists(newItemName);
-    console.log("existingItem: ", existingItem)
     try {
         let errorMessage = null;
         if (action === "add") {
+            const existingItem = await itemExists(newItemName);
             if (!existingItem) {
                 await addNewItem(newItemName, newItemPrice, newItemCategory);
             } else {
@@ -112,7 +112,15 @@ exports.manageItem = async (req, res) => {
         } else if (action === "delete") {
             console.log("delete")
         } else if (action === "edit") {
-            console.log("edit")
+            const existingItem = await itemExists(updatedItemName);
+            if (!existingItem) {
+                await editItem(itemName, updatedItemName, updatedItemPrice, updatedItemCategory);
+            } else {
+                //i need to make a different error message since the other one appears in the main form
+                console.log('item exists');
+                //need to prevent re-render in here
+            }
+
         }
 
         const items = await getAllItems();
