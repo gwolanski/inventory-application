@@ -109,6 +109,7 @@ body {
 
 .error-message {
     color: rgb(180, 2, 2);
+    font-weight: bold;
     padding-bottom: 10px;
 }
 

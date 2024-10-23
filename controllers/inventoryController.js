@@ -12,11 +12,12 @@ const {
 
 //get all items and categories for main page
 exports.renderIndexPage = async (req, res) => {
-    let errorMessage = null;
+    let addErrorMessage = null;
+    let editErrorMessage = null;
     try {
         const items = await getAllItems();
         const categories = await getAllCategories();
-        res.render("index", { items: items || [], categories: categories || [], errorMessage: errorMessage });
+        res.render("index", { items: items || [], categories: categories || [], addErrorMessage: addErrorMessage || null, editErrorMessage: editErrorMessage || null });
     } catch (error) {
         console.error("Error getting items and categories:", error);
         res.status(500).send("Internal Server Error");
@@ -25,12 +26,13 @@ exports.renderIndexPage = async (req, res) => {
 
 //renders a specific category page that only displays items from that category
 exports.renderItemsByCategory = async (req, res) => {
+    let editErrorMessage = null;
     try {
         const { category } = req.params;
         const categoryId = await getCategoryId(category);
         const items = await getCategoryItems(categoryId);
         const categories = await getAllCategories();
-        res.render("filteredItems", { selectedCategory: category, categoryId: categoryId, items: items || [], categories: categories })
+        res.render("filteredItems", { selectedCategory: category, categoryId: categoryId, items: items || [], categories: categories, editErrorMessage: editErrorMessage || null })
     } catch (error) {
         console.error("Error getting items by category:", error);
         res.status(500).send("Internal Server Error");
@@ -106,14 +108,15 @@ exports.manageItem = async (req, res) => {
     const { category } = req.params;
 
     try {
-        let errorMessage = null;
+        let addErrorMessage = null;
+        let editErrorMessage = null;
         if (action === "add") {
             const existingItem = await itemExists(newItemName);
             if (!existingItem) {
                 const properCaseNewItemName = await changeToProperCase(newItemName);
                 await addNewItem(properCaseNewItemName, newItemPrice, newItemCategory);
             } else {
-                errorMessage = "Item already exists";
+                addErrorMessage = "Item already exists.";
             }
         } else if (action === "delete") {
             await deleteItem(itemForDelete);
@@ -123,14 +126,11 @@ exports.manageItem = async (req, res) => {
                 const properCaseUpdatedItemName = await changeToProperCase(updatedItemName);
                 await editItem(itemName, properCaseUpdatedItemName, updatedItemPrice, updatedItemCategory);
             } else {
-                //i need to make a different error message since the other one appears in the main form
-                //when in /:category, accordion in navbar stops working
-                //need to prevent re-render in here
                 if (itemName === updatedItemName) {
                     const properCaseUpdatedItemName = await changeToProperCase(updatedItemName);
                     await editItem(itemName, properCaseUpdatedItemName, updatedItemPrice, updatedItemCategory);
                 } else {
-                    console.log('item exists');
+                    editErrorMessage = "Item already exists.";
                 }
             }
 
@@ -142,9 +142,9 @@ exports.manageItem = async (req, res) => {
         if (category) {
             const categoryId = await getCategoryId(category);
             const categoryItems = await getCategoryItems(categoryId);
-            res.render("filteredItems", { selectedCategory: category, categoryId: categoryId, items: categoryItems || [], categories: categories })
+            res.render("filteredItems", { selectedCategory: category, categoryId: categoryId, items: categoryItems || [], categories: categories, editErrorMessage: editErrorMessage || null })
         } else {
-            res.render("index", { items: items || [], categories: categories || [], errorMessage: errorMessage });
+            res.render("index", { items: items || [], categories: categories || [], addErrorMessage: addErrorMessage || null, editErrorMessage: editErrorMessage || null });
         }
     } catch (error) {
         console.error("Error managing item:", error);

@@ -20,6 +20,9 @@
             <h1 class="page-title">
                 <%= selectedCategory %>
             </h1>
+            <div class="error-message">
+                <%= editErrorMessage %>
+            </div>
             <div class="items-container">
                 <% if (items.length> 0) { %>
                     <% for (let i=0; i < items.length; i++) { %>
@@ -75,7 +78,6 @@
                                     There are no items in this category.
                                 </div>
                                 <% } %>
-
             </div>
         </div>
     </div>

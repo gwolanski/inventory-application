@@ -16,7 +16,9 @@
         </div>
         <div class="main-content">
             <h1 class="page-title">Item Inventory</h1>
-
+            <div class="error-message">
+                <%= addErrorMessage %>
+            </div>
             <div class="accordion-container">
                 <div class="accordion item-accordion" id="accordionExampleTwo"
                     style="--bs-accordion-inner-border-radius: 0; --bs-accordion-border-width: 0">
@@ -30,13 +32,10 @@
                         <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExampleTwo">
                             <div class="accordion-body">
                                 <form action="/" method="POST" class="item-form">
-                                    <div class="error-message">
-                                        <%= errorMessage %>
-                                    </div>
                                     <div class="input-container">
                                         <label for="newItemName" class="input-label">Name:</label>
                                         <input type="text" placeholder="item name" name="newItemName" id="newItemName"
-                                            class="item-input" minlength="2" maxlength="30">
+                                            class="item-input" minlength="2" maxlength="30" required>
                                     </div>
                                     <div class="input-container">
                                         <label for="newItemCategory" class="input-label">Category:</label>
@@ -48,7 +47,6 @@
                                                     <%= category.name %>
                                                 </option>
                                                 <% }) %>
-
                                         </select>
                                     </div>
                                     <div class="input-container">
@@ -68,57 +66,56 @@
             <div class="items-container">
                 <% for (let i=0; i < items.length; i++) { %>
                     <div class="item-container">
-                        <div class="item-name">
-                            <%= items[i].name %>
-                        </div>
-                        <div class="item-price">
-                            $<%= items[i].price %>
-                        </div>
-                        <div class="item-category">
-                            <%= items[i].category %>
-                        </div>
-                        <div class="item-buttons">
-                            <button class="edit-button" onclick="toggleEdit(this)">
-                                <img src="/edit.svg" alt="Edit Icon">
-                            </button>
-                            <form action="/" method="POST">
-                                <input type="hidden" name="itemForDelete" value="<%= items[i].name %>">
-                                <input type="hidden" name="action" value="delete">
-                                <button class="delete-button">
-                                    <img src="/delete_forever.svg" alt="Delete Icon">
+                        <%= editErrorMessage %>
+                            <div class="item-name">
+                                <%= items[i].name %>
+                            </div>
+                            <div class="item-price">
+                                $<%= items[i].price %>
+                            </div>
+                            <div class="item-category">
+                                <%= items[i].category %>
+                            </div>
+                            <div class="item-buttons">
+                                <button class="edit-button" onclick="toggleEdit(this)">
+                                    <img src="/edit.svg" alt="Edit Icon">
                                 </button>
+                                <form action="/" method="POST">
+                                    <input type="hidden" name="itemForDelete" value="<%= items[i].name %>">
+                                    <input type="hidden" name="action" value="delete">
+                                    <button class="delete-button">
+                                        <img src="/delete_forever.svg" alt="Delete Icon">
+                                    </button>
+                                </form>
+                            </div>
+
+                            <form action="/" method="POST" class="edit-item-form">
+                                <input type="text" name="updatedItemName" class="edit-item-input edit-name-input"
+                                    value="<%= items[i].name %>" style="display: none" minlength="2" maxlength="30">
+                                <input type="hidden" name="itemName" value="<%= items[i].name %>">
+                                <input type="number" name="updatedItemPrice" class="edit-item-input edit-price-input"
+                                    value="<%= items[i].price %>" style="display: none" step=".01">
+                                <input type="hidden" name="itemPrice" value="<%= items[i].price %>">
+                                <select name="updatedItemCategory" class="edit-item-input edit-category-input"
+                                    style="display: none" required>
+                                    <option value="" disabled selected>Select a category</option>
+                                    <% categories.forEach(category=> { %>
+                                        <option value="<%= category.id %>" <%=category.name===items[i].category
+                                            ? 'selected' : '' %>>
+                                            <%= category.name %>
+                                        </option>
+                                        <% }) %>
+                                </select>
+                                <input type="hidden" name="action" value="edit">
+                                <button class="update-button" type="submit" style="display: none">Update</button>
                             </form>
-                        </div>
-
-
-                        <form action="/" method="POST" class="edit-item-form">
-                            <input type="text" name="updatedItemName" class="edit-item-input edit-name-input"
-                                value="<%= items[i].name %>" style="display: none" minlength="2" maxlength="30">
-                            <input type="hidden" name="itemName" value="<%= items[i].name %>">
-                            <input type="number" name="updatedItemPrice" class="edit-item-input edit-price-input"
-                                value="<%= items[i].price %>" style="display: none" step=".01">
-                            <input type="hidden" name="itemPrice" value="<%= items[i].price %>">
-                            <select name="updatedItemCategory" class="edit-item-input edit-category-input"
-                                style="display: none" required>
-                                <option value="" disabled selected>Select a category</option>
-                                <% categories.forEach(category=> { %>
-                                    <option value="<%= category.id %>" <%=category.name===items[i].category ? 'selected'
-                                        : '' %>>
-                                        <%= category.name %>
-                                    </option>
-                                    <% }) %>
-                            </select>
-                            <input type="hidden" name="action" value="edit">
-                            <button class="update-button" type="submit" style="display: none">Update</button>
-                        </form>
-
 
                     </div>
                     <% } %>
             </div>
-
         </div>
     </div>
+
     <script>
         function toggleEdit(button) {
             const item = button.closest(".item-container");
