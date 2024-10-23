@@ -4,9 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/styles.css">
     <title>
-        <%= category %>
+        <%= selectedCategory %>
     </title>
 </head>
 
@@ -17,7 +18,7 @@
         </div>
         <div class="main-content">
             <h1 class="page-title">
-                <%= category %>
+                <%= selectedCategory %>
             </h1>
             <div class="items-container">
                 <% if (items.length> 0) { %>
@@ -30,8 +31,42 @@
                                 $ <%= items[i].price %>
                             </div>
                             <div class="item-category">
-                                <%= items[i].category %>
+                                <%= selectedCategory %>
                             </div>
+
+                            <div class="item-buttons">
+                                <button class="edit-button" onclick="toggleEdit(this)">
+                                    <img src="/edit.svg" alt="Edit Icon">
+                                </button>
+                                <form action="/" method="POST">
+                                    <input type="hidden" name="itemForDelete" value="<%= items[i].name %>">
+                                    <input type="hidden" name="action" value="delete">
+                                    <button class="delete-button">
+                                        <img src="/delete_forever.svg" alt="Delete Icon">
+                                    </button>
+                                </form>
+                            </div>
+
+                            <form action="/<%= selectedCategory %>" method="POST" class="edit-item-form">
+                                <input type="text" name="updatedItemName" class="edit-item-input edit-name-input"
+                                    value="<%= items[i].name %>" style="display: none" minlength="2" maxlength="30">
+                                <input type="hidden" name="itemName" value="<%= items[i].name %>">
+                                <input type="number" name="updatedItemPrice" class="edit-item-input edit-price-input"
+                                    value="<%= items[i].price %>" style="display: none" step=".01">
+                                <input type="hidden" name="itemPrice" value="<%= items[i].price %>">
+                                <select name="updatedItemCategory" class="edit-item-input edit-category-input"
+                                    style="display: none" required>
+                                    <option value="" disabled selected>Select a category</option>
+                                    <% categories.forEach(category=> { %>
+                                        <option value="<%= category.id %>" <%=category.id===categoryId ? 'selected' : ''
+                                            %>>
+                                            <%= category.name %>
+                                        </option>
+                                        <% }) %>
+                                </select>
+                                <input type="hidden" name="action" value="edit">
+                                <button class="update-button" type="submit" style="display: none">Update</button>
+                            </form>
 
                         </div>
                         <% } %>
@@ -44,6 +79,40 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function toggleEdit(button) {
+            const item = button.closest(".item-container");
+            const itemName = item.querySelector(".item-name");
+            const itemCategory = item.querySelector(".item-category");
+            const itemPrice = item.querySelector(".item-price");
+
+            const itemNameInput = item.querySelector(".edit-name-input");
+            const itemCategorySelect = item.querySelector(".edit-category-input");
+            const itemPriceInput = item.querySelector(".edit-price-input")
+            const updateButton = item.querySelector(".update-button");
+
+            if (itemNameInput.style.display === "none") {
+                itemNameInput.style.display = "inline";
+                itemCategorySelect.style.display = "inline";
+                itemPriceInput.style.display = "inline"
+                updateButton.style.display = "inline";
+                itemName.style.display = "none";
+                itemCategory.style.display = "none";
+                itemPrice.style.display = "none";
+                itemNameInput.focus();
+            } else {
+                itemNameInput.style.display = "none";
+                itemCategorySelect.style.display = "none";
+                itemPriceInput.style.display = "none";
+                updateButton.style.display = "none";
+                itemName.style.display = "inline";
+                itemCategory.style.display = "inline";
+                itemPrice.style.display = "inline";
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

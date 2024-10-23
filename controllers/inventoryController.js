@@ -30,7 +30,7 @@ exports.renderItemsByCategory = async (req, res) => {
         const categoryId = await getCategoryId(category);
         const items = await getCategoryItems(categoryId);
         const categories = await getAllCategories();
-        res.render("filteredItems", { category: category, items: items || [], categories: categories })
+        res.render("filteredItems", { selectedCategory: category, categoryId: categoryId, items: items || [], categories: categories })
     } catch (error) {
         console.error("Error getting items by category:", error);
         res.status(500).send("Internal Server Error");
@@ -103,6 +103,8 @@ exports.manageItem = async (req, res) => {
         itemForDelete
     } = req.body;
 
+    const { category } = req.params;
+
     try {
         let errorMessage = null;
         if (action === "add") {
@@ -118,19 +120,32 @@ exports.manageItem = async (req, res) => {
         } else if (action === "edit") {
             const existingItem = await itemExists(updatedItemName);
             if (!existingItem) {
-                const properCaseUpdatedItemName = await changeToProperCase(updatedItemName)
+                const properCaseUpdatedItemName = await changeToProperCase(updatedItemName);
                 await editItem(itemName, properCaseUpdatedItemName, updatedItemPrice, updatedItemCategory);
             } else {
                 //i need to make a different error message since the other one appears in the main form
-                console.log('item exists');
+                //when in /:category, accordion in navbar stops working
                 //need to prevent re-render in here
+                if (itemName === updatedItemName) {
+                    const properCaseUpdatedItemName = await changeToProperCase(updatedItemName);
+                    await editItem(itemName, properCaseUpdatedItemName, updatedItemPrice, updatedItemCategory);
+                } else {
+                    console.log('item exists');
+                }
             }
 
         }
 
         const items = await getAllItems();
         const categories = await getAllCategories();
-        res.render("index", { items: items || [], categories: categories || [], errorMessage: errorMessage });
+
+        if (category) {
+            const categoryId = await getCategoryId(category);
+            const categoryItems = await getCategoryItems(categoryId);
+            res.render("filteredItems", { selectedCategory: category, categoryId: categoryId, items: categoryItems || [], categories: categories })
+        } else {
+            res.render("index", { items: items || [], categories: categories || [], errorMessage: errorMessage });
+        }
     } catch (error) {
         console.error("Error managing item:", error);
         res.status(500).send("Internal Server Error");

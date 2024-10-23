@@ -17,50 +17,54 @@
         <div class="main-content">
             <h1 class="page-title">Item Inventory</h1>
 
-            <div class="accordion" id="accordionExampleTwo">
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                            Add New Item
-                        </button>
-                    </h2>
-                    <div id="collapseTwo" class="accordion-collapse collapse show"
-                        data-bs-parent="#accordionExampleTwo">
-                        <div class="accordion-body">
-                            <form action="/" method="POST" class="item-form">
-                                <div class="error-message">
-                                    <%= errorMessage %>
-                                </div>
-                                <div class="input-container">
-                                    <label for="newItemName" class="input-label">Item Name:</label>
-                                    <input type="text" placeholder="item name" name="newItemName" id="newItemName"
-                                        class="item-input" minlength="2" maxlength="30">
-                                </div>
-                                <div class="input-container">
-                                    <label for="newItemCategory" class="input-label">Item Category:</label>
-                                    <select name="newItemCategory" id="newItemCategory" class="item-input" required>
-                                        <option value="" disabled selected>Select a category</option>
-                                        <% categories.forEach(category=> { %>
-                                            <option value="<%= category.id %>">
-                                                <%= category.name %>
-                                            </option>
-                                            <% }) %>
+            <div class="accordion-container">
+                <div class="accordion item-accordion" id="accordionExampleTwo"
+                    style="--bs-accordion-inner-border-radius: 0; --bs-accordion-border-width: 0">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                                Add New Item
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExampleTwo">
+                            <div class="accordion-body">
+                                <form action="/" method="POST" class="item-form">
+                                    <div class="error-message">
+                                        <%= errorMessage %>
+                                    </div>
+                                    <div class="input-container">
+                                        <label for="newItemName" class="input-label">Name:</label>
+                                        <input type="text" placeholder="item name" name="newItemName" id="newItemName"
+                                            class="item-input" minlength="2" maxlength="30">
+                                    </div>
+                                    <div class="input-container">
+                                        <label for="newItemCategory" class="input-label">Category:</label>
+                                        <select name="newItemCategory" id="newItemCategory"
+                                            class="item-input category-input" required>
+                                            <option value="" disabled selected>Select a category</option>
+                                            <% categories.forEach(category=> { %>
+                                                <option value="<%= category.id %>">
+                                                    <%= category.name %>
+                                                </option>
+                                                <% }) %>
 
-                                    </select>
-                                </div>
-                                <div class="input-container">
-                                    <label for="newItemPrice" class="input-label">Price: $</label>
-                                    <input type="number" name="newItemPrice" id="newItemPrice" step=".01"
-                                        class="item-input" required>
-                                </div>
-                                <input type="hidden" name="action" value="add">
-                                <button class="add-button" type="submit">Add</button>
-                            </form>
+                                        </select>
+                                    </div>
+                                    <div class="input-container">
+                                        <label for="newItemPrice" class="input-label">Price: $</label>
+                                        <input type="number" name="newItemPrice" id="newItemPrice" step=".01"
+                                            class="item-input" required>
+                                    </div>
+                                    <input type="hidden" name="action" value="add">
+                                    <button class="add-button" type="submit">Add</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
             <div class="items-container">
                 <% for (let i=0; i < items.length; i++) { %>
                     <div class="item-container">
@@ -68,23 +72,33 @@
                             <%= items[i].name %>
                         </div>
                         <div class="item-price">
-                            $ <%= items[i].price %>
+                            $<%= items[i].price %>
                         </div>
                         <div class="item-category">
                             <%= items[i].category %>
                         </div>
-                        <button onclick="toggleEdit(this)">
-                            <img src="/edit.svg" alt="Edit Icon">
-                        </button>
+                        <div class="item-buttons">
+                            <button class="edit-button" onclick="toggleEdit(this)">
+                                <img src="/edit.svg" alt="Edit Icon">
+                            </button>
+                            <form action="/" method="POST">
+                                <input type="hidden" name="itemForDelete" value="<%= items[i].name %>">
+                                <input type="hidden" name="action" value="delete">
+                                <button class="delete-button">
+                                    <img src="/delete_forever.svg" alt="Delete Icon">
+                                </button>
+                            </form>
+                        </div>
+
 
                         <form action="/" method="POST" class="edit-item-form">
-                            <input type="text" name="updatedItemName" class="item-input edit-name-input"
+                            <input type="text" name="updatedItemName" class="edit-item-input edit-name-input"
                                 value="<%= items[i].name %>" style="display: none" minlength="2" maxlength="30">
                             <input type="hidden" name="itemName" value="<%= items[i].name %>">
-                            <input type="number" name="updatedItemPrice" class="item-input edit-price-input"
+                            <input type="number" name="updatedItemPrice" class="edit-item-input edit-price-input"
                                 value="<%= items[i].price %>" style="display: none" step=".01">
                             <input type="hidden" name="itemPrice" value="<%= items[i].price %>">
-                            <select name="updatedItemCategory" class="item-input edit-category-input"
+                            <select name="updatedItemCategory" class="edit-item-input edit-category-input"
                                 style="display: none" required>
                                 <option value="" disabled selected>Select a category</option>
                                 <% categories.forEach(category=> { %>
@@ -98,13 +112,7 @@
                             <button class="update-button" type="submit" style="display: none">Update</button>
                         </form>
 
-                        <form action="/" method="POST">
-                            <input type="hidden" name="itemForDelete" value="<%= items[i].name %>">
-                            <input type="hidden" name="action" value="delete">
-                            <button>
-                                <img src="/delete_forever.svg" alt="Delete Icon">
-                            </button>
-                        </form>
+
                     </div>
                     <% } %>
             </div>

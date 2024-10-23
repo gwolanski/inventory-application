@@ -4,6 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Arima:wght@100..700&family=Bitter:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/styles.css">
     <title>Category Manager</title>
 </head>
@@ -17,10 +23,10 @@
             <h1 class="page-title">Category Manager</h1>
 
             <form class="category-form" action="/categories" method="POST">
-                <input type="text" placeholder="new category" name="newCategory" id="newCategory" minlength="2"
-                    maxlength="30">
+                <input type="text" placeholder="Add new category" name="newCategory" id="newCategory" minlength="2"
+                    maxlength="40">
                 <input type="hidden" name="action" value="add">
-                <button class="add-button" type="submit">Add New Category</button>
+                <button class="category-add-button" type="submit">Add</button>
             </form>
             <div class="error-message">
                 <%= errorMessage %>
@@ -36,7 +42,7 @@
                                 </span>
                                 <form action="/categories" class="edit-category-form" method="POST">
                                     <input type="text" name="updatedCategory" class="category-input"
-                                        value="<%= category.name %>" style="display: none" minlength="2" maxlength="30">
+                                        value="<%= category.name %>" style="display: none" minlength="2" maxlength="40">
                                     <input type="hidden" name="category" value="<%= category.name %>">
                                     <input type="hidden" name="action" value="edit">
                                     <button class="update-button" type="submit" style="display: none">Update</button>
@@ -86,7 +92,7 @@
             }
         }
     </script>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
