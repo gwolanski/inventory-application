@@ -12,12 +12,11 @@ const {
 
 //get all items and categories for main page
 exports.renderIndexPage = async (req, res) => {
-    let addErrorMessage = null;
-    let editErrorMessage = null;
+    let errorMessage = null;
     try {
         const items = await getAllItems();
         const categories = await getAllCategories();
-        res.render("index", { items: items || [], categories: categories || [], addErrorMessage: addErrorMessage || null, editErrorMessage: editErrorMessage || null });
+        res.render("index", { items: items || [], categories: categories || [], errorMessage: errorMessage || null });
     } catch (error) {
         console.error("Error getting items and categories:", error);
         res.status(500).send("Internal Server Error");
@@ -26,13 +25,13 @@ exports.renderIndexPage = async (req, res) => {
 
 //renders a specific category page that only displays items from that category
 exports.renderItemsByCategory = async (req, res) => {
-    let editErrorMessage = null;
+    let errorMessage = null;
     try {
         const { category } = req.params;
         const categoryId = await getCategoryId(category);
         const items = await getCategoryItems(categoryId);
         const categories = await getAllCategories();
-        res.render("filteredItems", { selectedCategory: category, categoryId: categoryId, items: items || [], categories: categories, editErrorMessage: editErrorMessage || null })
+        res.render("filteredItems", { selectedCategory: category, categoryId: categoryId, items: items || [], categories: categories, errorMessage: errorMessage || null });
     } catch (error) {
         console.error("Error getting items by category:", error);
         res.status(500).send("Internal Server Error");
@@ -108,32 +107,42 @@ exports.manageItem = async (req, res) => {
     const { category } = req.params;
 
     try {
-        let addErrorMessage = null;
-        let editErrorMessage = null;
+        let errorMessage = null;
         if (action === "add") {
             const existingItem = await itemExists(newItemName);
             if (!existingItem) {
-                const properCaseNewItemName = await changeToProperCase(newItemName);
-                await addNewItem(properCaseNewItemName, newItemPrice, newItemCategory);
+                if (parseFloat(newItemPrice) > 99999999.99) {
+                    errorMessage = "Price exceeds limit of $99,999,999.99.";
+                } else {
+                    const properCaseNewItemName = await changeToProperCase(newItemName);
+                    await addNewItem(properCaseNewItemName, newItemPrice, newItemCategory);
+                }
             } else {
-                addErrorMessage = "Item already exists.";
+                errorMessage = "Item already exists.";
             }
         } else if (action === "delete") {
             await deleteItem(itemForDelete);
         } else if (action === "edit") {
             const existingItem = await itemExists(updatedItemName);
             if (!existingItem) {
-                const properCaseUpdatedItemName = await changeToProperCase(updatedItemName);
-                await editItem(itemName, properCaseUpdatedItemName, updatedItemPrice, updatedItemCategory);
-            } else {
-                if (itemName === updatedItemName) {
+                if (parseFloat(updatedItemPrice) > 99999999.99) {
+                    errorMessage = "Price exceeds limit of $99,999,999.99.";
+                } else {
                     const properCaseUpdatedItemName = await changeToProperCase(updatedItemName);
                     await editItem(itemName, properCaseUpdatedItemName, updatedItemPrice, updatedItemCategory);
+                }
+            } else {
+                if (itemName === updatedItemName) {
+                    if (parseFloat(updatedItemPrice) > 99999999.99) {
+                        errorMessage = "Price exceeds limit of $99,999,999.99.";
+                    } else {
+                        const properCaseUpdatedItemName = await changeToProperCase(updatedItemName);
+                        await editItem(itemName, properCaseUpdatedItemName, updatedItemPrice, updatedItemCategory);
+                    }
                 } else {
-                    editErrorMessage = "Item already exists.";
+                    errorMessage = "Item already exists.";
                 }
             }
-
         }
 
         const items = await getAllItems();
@@ -142,9 +151,9 @@ exports.manageItem = async (req, res) => {
         if (category) {
             const categoryId = await getCategoryId(category);
             const categoryItems = await getCategoryItems(categoryId);
-            res.render("filteredItems", { selectedCategory: category, categoryId: categoryId, items: categoryItems || [], categories: categories, editErrorMessage: editErrorMessage || null })
+            res.render("filteredItems", { selectedCategory: category, categoryId: categoryId, items: categoryItems || [], categories: categories, errorMessage: errorMessage || null })
         } else {
-            res.render("index", { items: items || [], categories: categories || [], addErrorMessage: addErrorMessage || null, editErrorMessage: editErrorMessage || null });
+            res.render("index", { items: items || [], categories: categories || [], errorMessage: errorMessage || null });
         }
     } catch (error) {
         console.error("Error managing item:", error);
