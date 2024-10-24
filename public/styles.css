@@ -1,7 +1,3 @@
-/* complementary colors: hex codes for muted coral (#FF6F61), salmon (#FA8072), warm beige (#f4D1AE), light peach (#FFE5B4 */
-/* contrasting colors: hex codes for dark brown (#4E342E), chocolate (#5D4037), navy (#00203F or #1A3D5C), gold (#FFC107 or #FFD700) */
-
-
 html,
 body {
     height: 100vh;
@@ -84,6 +80,7 @@ body {
 
 .update-button {
     font-size: 0.9rem;
+    margin-top: 5px;
 }
 
 .category-input {

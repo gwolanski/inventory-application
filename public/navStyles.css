@@ -1,7 +1,10 @@
+body {
+    font-family: "Bitter", serif;
+}
+
 #navbar-container {
     background-color: rgb(247, 242, 235);
 }
-
 
 .heading {
     font-size: 1.5rem;
@@ -9,14 +12,6 @@
     color: #4E342E;
     font-family: "Arima", serif;
     font-weight: 600;
-}
-
-body {
-    font-family: "Bitter", serif;
-}
-
-.accordion-button {
-    font-weight: 500;
 }
 
 .nav-button {
@@ -39,6 +34,7 @@ body {
 
 .accordion-button {
     background-color: rgb(247, 242, 235);
+    font-weight: 500;
 }
 
 .accordion-button:not(.collapsed) {

@@ -20,5 +20,4 @@ router.get("/:category", inventoryController.renderItemsByCategory);
 //edit or delete items while on specified category page
 router.post("/:category", inventoryController.manageItem);
 
-
 module.exports = router;

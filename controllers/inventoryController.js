@@ -8,11 +8,13 @@ const {
     getCategoryId,
     getAllCategories,
     editCategory,
-    editItem } = require("../db/queries");
+    editItem,
+    itemExists } = require("../db/queries");
 
 //get all items and categories for main page
 exports.renderIndexPage = async (req, res) => {
     let errorMessage = null;
+
     try {
         const items = await getAllItems();
         const categories = await getAllCategories();
@@ -26,6 +28,7 @@ exports.renderIndexPage = async (req, res) => {
 //renders a specific category page that only displays items from that category
 exports.renderItemsByCategory = async (req, res) => {
     let errorMessage = null;
+
     try {
         const { category } = req.params;
         const categoryId = await getCategoryId(category);
@@ -50,7 +53,7 @@ exports.renderCategoryManager = async (req, res) => {
     }
 };
 
-//add or delete category
+//add, edit, or delete category
 exports.manageCategory = async (req, res) => {
     const { action, newCategory, category, updatedCategory } = req.body;
 
@@ -63,7 +66,7 @@ exports.manageCategory = async (req, res) => {
                 const properCaseNewCategory = await changeToProperCase(newCategory);
                 await addNewCategory(properCaseNewCategory);
             } else {
-                errorMessage = "Category already exists.";
+                errorMessage = existsErrorMessage("Category");
             }
         } else if (action === "delete") {
             const categoryId = await getCategoryId(category);
@@ -79,7 +82,7 @@ exports.manageCategory = async (req, res) => {
                 const properCaseUpdatedCategory = await changeToProperCase(updatedCategory);
                 await editCategory(category, properCaseUpdatedCategory);
             } else {
-                errorMessage = "Category already exists.";
+                errorMessage = existsErrorMessage("Category");
             }
         }
 
@@ -108,39 +111,40 @@ exports.manageItem = async (req, res) => {
 
     try {
         let errorMessage = null;
+
         if (action === "add") {
             const existingItem = await itemExists(newItemName);
             if (!existingItem) {
-                if (parseFloat(newItemPrice) > 99999999.99) {
-                    errorMessage = "Price exceeds limit of $99,999,999.99.";
+                if (!isPriceValid(newItemPrice)) {
+                    errorMessage = priceErrorMessage();
                 } else {
                     const properCaseNewItemName = await changeToProperCase(newItemName);
                     await addNewItem(properCaseNewItemName, newItemPrice, newItemCategory);
                 }
             } else {
-                errorMessage = "Item already exists.";
+                errorMessage = existsErrorMessage("Item");
             }
         } else if (action === "delete") {
             await deleteItem(itemForDelete);
         } else if (action === "edit") {
             const existingItem = await itemExists(updatedItemName);
             if (!existingItem) {
-                if (parseFloat(updatedItemPrice) > 99999999.99) {
-                    errorMessage = "Price exceeds limit of $99,999,999.99.";
+                if (!isPriceValid(updatedItemPrice)) {
+                    errorMessage = priceErrorMessage();
                 } else {
                     const properCaseUpdatedItemName = await changeToProperCase(updatedItemName);
                     await editItem(itemName, properCaseUpdatedItemName, updatedItemPrice, updatedItemCategory);
                 }
             } else {
                 if (itemName === updatedItemName) {
-                    if (parseFloat(updatedItemPrice) > 99999999.99) {
-                        errorMessage = "Price exceeds limit of $99,999,999.99.";
+                    if (!isPriceValid(updatedItemPrice)) {
+                        errorMessage = priceErrorMessage();
                     } else {
                         const properCaseUpdatedItemName = await changeToProperCase(updatedItemName);
                         await editItem(itemName, properCaseUpdatedItemName, updatedItemPrice, updatedItemCategory);
                     }
                 } else {
-                    errorMessage = "Item already exists.";
+                    errorMessage = existsErrorMessage("Item");
                 }
             }
         }
@@ -161,13 +165,18 @@ exports.manageItem = async (req, res) => {
     }
 };
 
-async function itemExists(itemName) {
-    const items = await getAllItems();
-    return items.some(item => {
-        return item.name.toLowerCase() === itemName.toLowerCase();
-    })
-};
-
 async function changeToProperCase(itemName) {
     return itemName.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
-}
+};
+
+function isPriceValid(price) {
+    return parseFloat(price) <= 99999999.99;
+};
+
+function priceErrorMessage() {
+    return "Price exceeds limit of $99,999,999.99."
+};
+
+function existsErrorMessage(type) {
+    return `${type} already exists.`
+};
