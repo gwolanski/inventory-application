@@ -2,4 +2,4 @@ This Inventory Application is a project I completed as part of The Odin Project 
 
 Overall, this was one of the more complex projects that I've completed. There were many moving parts that required a lot of trial and error, refactoring, and integrations to make sure the application ran smoothly while also keeping the code as clean as possible. Although this was challenging, it was a fun project that felt applicable to use cases I may come across in a development career. The project instructions can be found here: https://www.theodinproject.com/lessons/node-path-nodejs-inventory-application
 
-The web app can be found here:
+The web app can be found here: https://grocery-inventory-application.onrender.com/
